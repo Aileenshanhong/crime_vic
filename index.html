@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Crime Incidents in Victoria, Australia</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Crime Incidents in Victoria, Australia">
+  <meta name="author" content="A.L.">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>Crime Incidents in Victoria, Australia</h1>
+    <h2></h2>
+    <p>A.L.<br/></p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>Overview</h2>
+  </hgroup>
+  <article data-timings="">
+    <ol>
+<li>Summary</li>
+<li>Download Data</li>
+<li>Clustering</li>
+<li>Crime Map by Police Station</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <article data-timings="">
+    <hr>
+
+<h2>Summary</h2>
+
+<p>This web application shows crime incidents recorded in different police stations in Victoria, Australia. The four colours indicate four clusters based on the number of crime incidents. The greener the point in the map, the safer it is in that area. The red colour shows that it is a &#39;no-go&#39; zone.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>Download Data</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r"> library(RCurl)
+  x &lt;- read.csv(&quot;http://data.gov.au/storage/f/2013-05-12T201353/tmpZrsaL6PSA-Rates.csv&quot;, stringsAsFactors = F)
+
+  pcfile &lt;- getURL(&quot;https://raw.githubusercontent.com/Aileenshanhong/crime_vic/master/pc_full_lat_long.csv&quot;)
+  suburbs &lt;- read.csv(text = pcfile, stringsAsFactors = F)
+</code></pre>
+
+<hr>
+
+<h2>Clustering</h2>
+
+<p>Clustering is conducted based on the number of different types of crime incidents, such as serious injuries, assault etc.</p>
+
+<pre><code class="r">  crime &lt;- dcast(x, PSA_NAME ~ LABEL, value.var = &quot;CURR&quot;)
+  colnames(crime) &lt;- tolower(colnames(crime))
+  k1 &lt;- clara(crime[,-1], k = 4)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h2>Crime Map by Police Station</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">    crime.map &lt;- Leaflet$new()
+    crime.map$setView(c(-36.758106, 144.283042), zoom = 7)
+    crime.map$tileLayer(provider = &#39;Stamen.TonerLite&#39;)
+    crime.map$geoJson(toGeoJSON(crimelist1),
+                      onEachFeature = &#39;#! function(feature, layer){
+                                   layer.bindPopup(feature.properties.popup)
+                                   } !#&#39;,
+                      pointToLayer = &quot;#! function(feature, latlng){
+                                 return L.circleMarker(latlng, {
+                                 radius: 5,
+                                 fillColor: feature.properties.fillColor || &#39;red&#39;, 
+                                 color: &#39;#000&#39;,
+                                 weight: 1,
+                                 fillOpacity: 0.8
+                                  })
+                                 } !#&quot; )
+    crime.map$enablePopover(TRUE)
+    crime.map$fullScreen(TRUE)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Overview'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title=''>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Download Data'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Crime Map by Police Station'>
+         4
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
