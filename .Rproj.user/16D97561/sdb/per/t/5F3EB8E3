@@ -1,0 +1,16 @@
+{
+    "contents" : "\n# This is the user-interface definition of a Shiny web application.\n# You can find out more about building applications with Shiny here:\n#\n# http://shiny.rstudio.com\n#\n\n\nlibrary(shiny)\nrequire(rCharts)\nshinyUI(navbarPage(\"VIC Crime Incidents\", \n  tabPanel(\"Interactive Map\",\n           div(class = \"outer\",\n               tags$head(includeCSS(\"styles.css\")),\n           chartOutput(\"map_container\", 'leaflet')        \n           )),\n           \n    tabPanel(\"Graph\",\n             \n             sidebarPanel(\n                helpText(\"This web application shows crime incidents recorded in different police stations in Victoria, Australia. The four colours indicate four clusters based on the number of crime incidents. The greener the point in the map, the safer it is in that area. The red colour shows that it is a 'no-go' zone.\"),\n                uiOutput(\"psa\")\n               ),\n             mainPanel(\n               \n                showOutput(\"chart1\", \"polycharts\"),\n                showOutput(\"chart2\", \"polycharts\")\n               )\n             \n              )\n    \n))",
+    "created" : 1419052159998.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1050041426",
+    "id" : "5F3EB8E3",
+    "lastKnownWriteTime" : 1419157375,
+    "path" : "~/Downloads/crime_project/crime_vic/ui.R",
+    "project_path" : "ui.R",
+    "properties" : {
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}

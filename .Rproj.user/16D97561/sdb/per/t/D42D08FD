@@ -1,0 +1,16 @@
+{
+    "contents" : "---\ntitle       : Crime Incidents in Victoria, Australia\nsubtitle    : \nauthor      : A.L.\njob         : \nframework   : io2012        # {io2012, html5slides, shower, dzslides, ...}\nhighlighter : highlight.js  # {highlight.js, prettify, highlight}\nhitheme     : tomorrow      # \nwidgets     : []            # {mathjax, quiz, bootstrap}\nmode        : selfcontained # {standalone, draft}\nknit        : slidify::knit2slides\n---\n\n## Overview\n\n1. Summary\n2. Download Data\n3. Clustering\n4. Crime Map by Police Station\n\n--- .class #id \n---\n\n## Summary\n\nThis web application shows crime incidents recorded in different police stations in Victoria, Australia. The four colours indicate four clusters based on the number of crime incidents. The greener the point in the map, the safer it is in that area. The red colour shows that it is a 'no-go' zone.\n\n\n---              \n\n## Download Data\n```{r}\n library(RCurl)\n  x <- read.csv(\"http://data.gov.au/storage/f/2013-05-12T201353/tmpZrsaL6PSA-Rates.csv\", stringsAsFactors = F)\n  \n  pcfile <- getURL(\"https://raw.githubusercontent.com/Aileenshanhong/crime_vic/master/pc_full_lat_long.csv\")\n  suburbs <- read.csv(text = pcfile, stringsAsFactors = F)\n```\n---\n\n## Clustering\nClustering is conducted based on the number of different types of crime incidents, such as serious injuries, assault etc.\n```{r, eval=FALSE}\n  crime <- dcast(x, PSA_NAME ~ LABEL, value.var = \"CURR\")\n  colnames(crime) <- tolower(colnames(crime))\n  k1 <- clara(crime[,-1], k = 4)\n```\n\n---\n\n## Crime Map by Police Station\n```{r, eval=FALSE,comment=\"Creating a map\"}\n    crime.map <- Leaflet$new()\n    crime.map$setView(c(-36.758106, 144.283042), zoom = 7)\n    crime.map$tileLayer(provider = 'Stamen.TonerLite')\n    crime.map$geoJson(toGeoJSON(crimelist1),\n                      onEachFeature = '#! function(feature, layer){\n                                   layer.bindPopup(feature.properties.popup)\n                                   } !#',\n                      pointToLayer = \"#! function(feature, latlng){\n                                 return L.circleMarker(latlng, {\n                                 radius: 5,\n                                 fillColor: feature.properties.fillColor || 'red', \n                                 color: '#000',\n                                 weight: 1,\n                                 fillOpacity: 0.8\n                                  })\n                                 } !#\" )\n    crime.map$enablePopover(TRUE)\n    crime.map$fullScreen(TRUE)\n```\n\n\n\n",
+    "created" : 1419186911245.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "382229286",
+    "id" : "D42D08FD",
+    "lastKnownWriteTime" : 1419190410,
+    "path" : "~/Downloads/crime_project/crime_vic/A. L./A. L./index.Rmd",
+    "project_path" : "A. L./A. L./index.Rmd",
+    "properties" : {
+    },
+    "source_on_save" : false,
+    "type" : "r_markdown"
+}
