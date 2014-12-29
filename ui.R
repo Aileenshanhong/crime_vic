@@ -5,26 +5,28 @@
 # http://shiny.rstudio.com
 #
 
+
 library(shiny)
-
-shinyUI(fluidPage(
-
-  # Application title
-  titlePanel("Old Faithful Geyser Data"),
-
-  # Sidebar with a slider input for number of bins
-  sidebarLayout(
-    sidebarPanel(
-      sliderInput("bins",
-                  "Number of bins:",
-                  min = 1,
-                  max = 50,
-                  value = 30)
-    ),
-
-    # Show a plot of the generated distribution
-    mainPanel(
-      plotOutput("distPlot")
-    )
-  )
+require(rCharts)
+shinyUI(navbarPage("VIC Crime Incidents", 
+  tabPanel("Interactive Map",
+           div(class = "outer",
+               tags$head(includeCSS("styles.css")),
+           chartOutput("map_container", 'leaflet')        
+           )),
+           
+    tabPanel("Graph",
+             
+             sidebarPanel(
+                helpText("This web application shows crime incidents recorded in different police stations in Victoria, Australia. The four colours indicate four clusters based on the number of crime incidents. The greener the point in the map, the safer it is in that area. The red colour shows that it is a 'no-go' zone."),
+                uiOutput("psa")
+               ),
+             mainPanel(
+               
+                showOutput("chart1", "polycharts"),
+                showOutput("chart2", "polycharts")
+               )
+             
+              )
+    
 ))
